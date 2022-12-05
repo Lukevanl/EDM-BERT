@@ -15,7 +15,7 @@ from pygaggle.rerank.bm25 import Bm25Reranker
 from pygaggle.rerank.transformer import (
     UnsupervisedTransformerReranker,
     MonoT5,
-    MonoBERT
+    EMBERT
 )
 from pygaggle.rerank.random import RandomReranker
 from pygaggle.rerank.similarity import CosineSimilarityMatrixProvider
@@ -101,9 +101,9 @@ def construct_transformer(options:
 
 def construct_seq_class_transformer(options: DocumentRankingEvaluationOptions
                                     ) -> Reranker:
-    model = MonoBERT.get_model(options.model, from_tf=options.from_tf, device=options.device)
-    tokenizer = MonoBERT.get_tokenizer(options.tokenizer_name)
-    return MonoBERT(model, tokenizer)
+    model = EMBERT.get_model(options.model, from_tf=options.from_tf, device=options.device)
+    tokenizer = EMBERT.get_tokenizer(options.tokenizer_name)
+    return EMBERT(model, tokenizer)
 
 
 def construct_bm25(options: DocumentRankingEvaluationOptions) -> Reranker:
