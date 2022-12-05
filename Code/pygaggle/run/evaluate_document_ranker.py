@@ -115,11 +115,11 @@ def main():
     apb.add_opts(opt('--task',
                      type=str,
                      default='msmarco'),
-                 opt('')
                  opt('--dataset', type=Path, required=True),
                  opt('--index-dir', type=Path, required=True),
                  opt('--w2v', type=Path, required=False),
                  opt('--mapper', type=Path, required=False),
+                 
                  opt('--method',
                      required=True,
                      type=str,
