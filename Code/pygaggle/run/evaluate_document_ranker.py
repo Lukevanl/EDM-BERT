@@ -103,7 +103,7 @@ def construct_seq_class_transformer(options: DocumentRankingEvaluationOptions
                                     ) -> Reranker:
     model = EMBERT.get_model(options.model, from_tf=options.from_tf, device=options.device)
     tokenizer = EMBERT.get_tokenizer(options.tokenizer_name)
-    return EMBERT(model, tokenizer)
+    return EMBERT(model, tokenizer, options.w2v, options.mapper)
 
 
 def construct_bm25(options: DocumentRankingEvaluationOptions) -> Reranker:
@@ -115,8 +115,11 @@ def main():
     apb.add_opts(opt('--task',
                      type=str,
                      default='msmarco'),
+                 opt('')
                  opt('--dataset', type=Path, required=True),
                  opt('--index-dir', type=Path, required=True),
+                 opt('--w2v', type=Path, required=False),
+                 opt('--mapper', type=Path, required=False),
                  opt('--method',
                      required=True,
                      type=str,
