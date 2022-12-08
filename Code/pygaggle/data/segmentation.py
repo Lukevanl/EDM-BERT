@@ -26,7 +26,7 @@ class SegmentProcessor:
     """
     def __init__(self, max_characters=10000000):
         self.nlp = spacy.blank("en")
-        self.nlp.add_pipe(self.nlp.create_pipe("sentencizer"))
+        self.nlp.add_pipe('sentencizer')
         self.max_characters = max_characters
         self.aggregate_methods = {
             "max": self._max_aggregate,
@@ -49,18 +49,16 @@ class SegmentProcessor:
         segmented_docs, doc_end_indexes, end_idx = [], [0], 0
         for document in documents:
             doc = self.nlp(document.text[:self.max_characters])
-            sentences = [sent.string.strip() for sent in doc.sents]
+            sentences = [sent.text.strip() for sent in doc.sents]
             # If the text is empty (i.e. there are no sentences), the segment_text is solely the title of the document.
             if len(sentences) == 0:
-                segment_text = document.title
+                segment_text = "-"
                 segmented_docs.append(Text(segment_text, dict(docid=document.metadata["docid"])))
                 end_idx += 1
                 doc_end_indexes.append(int(end_idx))
             else:
                 for i in range(0, len(sentences), stride):
                     segment_text = ' '.join(sentences[i:i + seg_size])
-                    if not document.title == '':
-                        segment_text = document.title + '. ' + segment_text
                     segmented_docs.append(Text(segment_text, dict(docid=document.metadata["docid"])))
                     if i + seg_size >= len(sentences):
                         end_idx += i/stride + 1
@@ -91,3 +89,4 @@ class SegmentProcessor:
     @staticmethod
     def _mean_aggregate(scores):
         return np.mean(scores)
+        

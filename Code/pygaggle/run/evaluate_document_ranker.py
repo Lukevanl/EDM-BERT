@@ -50,6 +50,8 @@ class DocumentRankingEvaluationOptions(BaseModel):
     metrics: List[str]
     model_type: Optional[str]
     tokenizer_name: Optional[str]
+    w2v: Optional[Path]
+    mapper: Optional[Path]
 
     @validator('task')
     def task_exists(cls, v: str):
@@ -119,7 +121,7 @@ def main():
                  opt('--index-dir', type=Path, required=True),
                  opt('--w2v', type=Path, required=False),
                  opt('--mapper', type=Path, required=False),
-                 
+
                  opt('--method',
                      required=True,
                      type=str,
@@ -150,6 +152,7 @@ def main():
                  opt('--aggregate-method', type=str, default="max"))
     args = apb.parser.parse_args()
     options = DocumentRankingEvaluationOptions(**vars(args))
+    print(options)
     logging.info("Preprocessing Queries & Docs:")
     ds = MsMarcoDataset.from_folder(str(options.dataset), split=options.split,
                                     is_duo=options.is_duo)
@@ -174,3 +177,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
