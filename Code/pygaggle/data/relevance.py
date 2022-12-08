@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from functools import lru_cache
 import logging
+from pygaggle.rerank.bm25 import Bm25Reranker
 from typing import List, Optional
 import json
 import re
+from .base import Query, Text
 
 from pyserini.search import SimpleSearcher
 
@@ -95,13 +97,24 @@ class MsMarcoPassageLoader:
     def __init__(self, index_path: str):
         self.searcher = SimpleSearcher(index_path)
 
-    def load_passage(self, id: str) -> MsMarcoPassage:
+    def get_most_relevant_paragraph(self, query, passage):
+        bm25_reranker = Bm25Reranker()
+        passages = passage.split('**PARAGRAPH**')
+        passages_textobj = [Text(passage) for passage in passages]
+        query_queryobj = Query(query)
+        texts_with_scores = bm25_reranker.rerank(query_queryobj, passages_textobj)
+        most_relevant_paragraph = max([text.score for text in texts_with_scores])
+        return most_relevant_paragraph.text
+
+    def load_passage(self, id: str, query: str) -> MsMarcoPassage:
         try:
             passage = self.searcher.doc(id).lucene_document().get('raw')
+            most_relevant_paragraph = self.get_most_relevant_paragraph(query, passage)
         except AttributeError as e:
             try:
                 passage = self.searcher.doc(id).raw()
+                most_relevant_paragraph = self.get_most_relevant_paragraph(query, passage)
             except AttributeError as e:
-                passage = ""
+                most_relevant_paragraph = ""
                 #raise ValueError(f'skipping {id} passage unretrievable because {e}')
-        return MsMarcoPassage(passage)
+        return MsMarcoPassage(most_relevant_paragraph)

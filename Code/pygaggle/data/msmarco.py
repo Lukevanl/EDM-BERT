@@ -103,7 +103,7 @@ class MsMarcoDataset(BaseModel):
                 example_map[qid] = [convert_to_unicode(text), [], [], []]
             example_map[qid][1].append([cand for cand in cands][0])
             try:
-                passages = [loader.load_passage(cand) for cand in cands]
+                passages = [loader.load_passage(cand, text) for cand in cands]
                 example_map[qid][2].append(
                     [convert_to_unicode(passage.all_text)
                      for passage in passages][0])
