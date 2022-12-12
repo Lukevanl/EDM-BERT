@@ -108,7 +108,7 @@ class MsMarcoDataset(BaseModel):
                     [convert_to_unicode(passage.all_text)
                      for passage in passages][0])
             except ValueError as e:
-                logging.warning(f'Skipping {passages} because {e}')
+                logging.warning(f'Skipping because {e}')
                 continue
             example_map[qid][3].append(cands[0] in rel_cands)
         mean_stats = defaultdict(list)

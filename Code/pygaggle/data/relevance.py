@@ -98,22 +98,35 @@ class MsMarcoPassageLoader:
 
     def get_most_relevant_paragraph(self, query, passage):
         bm25_reranker = Bm25Reranker()
+        #print(f"query: {query}, passage: {passage}")
         passages = passage.split('**PARAGRAPH**')
         passages = passages[1:]
+        #print(f"Passages: {passages}\n")
         passages_textobj = [Text(passage) for passage in passages]
         query_queryobj = Query(query)
         texts_with_scores = bm25_reranker.rerank(query_queryobj, passages_textobj)
+        #print(f"Scores: \n {[(text_with_score.score, text_with_score.text) for text_with_score in texts_with_scores]}\n\n")
         most_relevant_paragraph = max(texts_with_scores, key=lambda text: text.score)
         return most_relevant_paragraph.text
 
     def load_passage(self, id: str, query: str) -> MsMarcoPassage:
         try:
             passage = self.searcher.doc(id).lucene_document().get('raw')
-            most_relevant_paragraph = self.get_most_relevant_paragraph(query, passage)
+            #Take entire text (max of 2000 characters)
+            most_relevant_paragraph = passage
+            if(len(most_relevant_paragraph) > 2000):
+                most_relevant_paragraph = most_relevant_paragraph[:2000]
+            #Take most relevant paragraph
+            #most_relevant_paragraph = self.get_most_relevant_paragraph(query, passage)
+            #Take first paragraph
+            #passages_split = passage.split('**PARAGRAPH**')
+            #most_relevant_paragraph = ""
+            #if(len(passages_split) > 1):
+            #    most_relevant_paragaph = passages_split[1]
         except AttributeError as e:
             try:
                 passage = self.searcher.doc(id).raw()
-                most_relevant_paragraph = self.get_most_relevant_paragraph(query, passage)
+               # most_relevant_paragraph = self.get_most_relevant_paragraph(query, passage)
             except AttributeError as e:
                 most_relevant_paragraph = ""
                 #raise ValueError(f'skipping {id} passage unretrievable because {e}')
