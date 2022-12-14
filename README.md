@@ -1,4 +1,22 @@
-# EMBERT
+# EDM-BERT
+EM-BERT currently uses static representations of wikipedia pages, we plan to use dynamic representations for these pages. We do this by finding the most relevant paragraph for an entity based on the query using a BM25 search model.
+
+![EDM-Bert Promo](edm_bert.jpg)
+
+## Setup
+- Clone this repository
+- Run `Code/make.sh`
+- `cd Code/XML_parser/`
+- Download the files with [entities](https://surfdrive.surf.nl/files/index.php/s/fT0R5czH4hmIlgw/download) and [wikipedia](http://downloads.dbpedia.org/2015-10/core-i18n/en/pages_articles_en.xml.bz2).
+- Install `xml_split` using `sudo apt install xml-twig-tools`
+- Remove the abstract from the tsv file ```awk -F"\t" '{print $1}' short_abstracts_en_full.tsv > entities.tsv```
+- Run the script to split up the wikipedia dump and create JSON files for our Lucene index `./build_jsons.sh 5Gb wikipedia.xml entities.tsv`
+- Create the Lucene index ```python -m pyserini.index -collection JsonCollection -input json -threads 20 -index "full_wiki_dump/" -storeDocvectors -storePositions -storeRaw```
+- Run EDMBERT with this index ```python3 -m pygaggle.run.evaluate_document_ranker  --split dev --method seq_class_transformer --model "output/monobert-large-msmarco-finetuned_acc_batch_testmodel_acc_batch_600k_64_e6" --dataset "data/DBpedia-Entity/" --index-dir "full_wiki_dump" --task msmarco --output-file ../Runs/testrun_mostrel.tsv \
+ --w2v "resources/wikipedia2vec/wikipedia-20190701/wikipedia2vec_500.pkl" --mapper "mappers/wikipedia2vec-500-cased.monobert-base-cased.linear.npy"```
+
+
+# Orginal EMBERT Description
 
 ![Model architecture](ebert_diagram.png)
 
