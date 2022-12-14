@@ -14,7 +14,7 @@ EM-BERT currently uses static representations of wikipedia pages, we plan to use
 - Create the Lucene index ```python -m pyserini.index -collection JsonCollection -input json -threads 20 -index "full_wiki_dump/" -storeDocvectors -storePositions -storeRaw```
 - Run EDMBERT with this index ```python3 -m pygaggle.run.evaluate_document_ranker  --split dev --method seq_class_transformer --model "output/monobert-large-msmarco-finetuned_acc_batch_testmodel_acc_batch_600k_64_e6" --dataset "data/DBpedia-Entity/" --index-dir "full_wiki_dump" --task msmarco --output-file ../Runs/testrun_mostrel.tsv \
  --w2v "resources/wikipedia2vec/wikipedia-20190701/wikipedia2vec_500.pkl" --mapper "mappers/wikipedia2vec-500-cased.monobert-base-cased.linear.npy"```
-
+- Evaluate the scores by running ```python3 Code/Evaluation.py "Code/XML_Parser/qrels-v2.txt" "/Runs/testrun_mostrel.tsv"```
 
 # Orginal EMBERT Description
 
