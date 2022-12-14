@@ -1,3 +1,13 @@
+# XML_Parser
+short_abstracts_en_full.tsv
+wikipedia_extract_large.xml
+results.json
+wikipedia.xml
+wiki-chunks/
+json/
+wiki-02.xml
+entities.tsv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
