@@ -9,5 +9,5 @@ EM-Bert currently uses static representations of wikipedia pages, we plan to use
 
 - Run the script to split up the wikipedia dump and create JSON files for our Lucene index `./build_jsons.sh 1Gb wikipedia.xml entities.tsv`
 <!-- - Run the ```XML_parser.py``` scriptto create JSON files for the Lucene index -->
-- Create the Lucene index ```TODO```
+- Create the Lucene index ```python -m pyserini.index -collection JsonCollection -input json -threads 20 -index "full_wiki_dump/" -storeDocvectors -storePositions -storeRaw```
 - Run EMBERT with this index (and our addition to use BM25 on the new Lucene index)

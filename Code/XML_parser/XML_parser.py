@@ -87,7 +87,7 @@ def parse(XMLfile, list_of_titles, output_file):
             if (elem.tag[-4:] == "page"):
                 title = elem.find('title').text
                 content = elem.find('revision').find('text').text
-                if (content[:1] != "#"): #Filter out empty pages (redirects)
+                if ((content is not None) and content[:1] != "#"): #Filter out empty pages (redirects)
                     dbpedia_title = get_title(title)
                     if (dbpedia_title in list_of_titles):
                         f.write(to_json(dbpedia_title, parse_content(content)))
