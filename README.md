@@ -1,8 +1,6 @@
 # EDM-BERT
 EM-BERT currently uses static representations of wikipedia pages, we plan to use dynamic representations for these pages. We do this by finding the most relevant paragraph for an entity based on the query using a BM25 search model.
 
-![EDM-Bert Promo](edm_bert.jpg)
-
 ## Setup
 - Clone this repository
 - Run `Code/make.sh`
